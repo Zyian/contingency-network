@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -19,8 +20,17 @@ func NewServer(r *mux.Router) *Server {
 			Handler:      r,
 			WriteTimeout: 15 * time.Second,
 			ReadTimeout:  15 * time.Second,
+			Addr:         getPort(),
 		},
 	}
+}
+
+func getPort() string {
+	p := os.Getenv("PORT")
+	if p != "" {
+		return ":" + p
+	}
+	return ""
 }
 
 func (s *Server) Start(ctx context.Context) {
